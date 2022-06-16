@@ -1,4 +1,4 @@
-export const routeTwoResponse = {
+export const SampleResponse = {
   posts: [
     {
       author: 'Jon Abbott',
