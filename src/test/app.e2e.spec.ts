@@ -16,9 +16,9 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/api (GET)', () => {
+  it('/api/ping (GET)', () => {
     return request(app.getHttpServer())
-      .get('/api')
+      .get('/api/ping')
       .expect(200)
       .expect({ success: true });
   });

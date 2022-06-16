@@ -1,11 +1,10 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { BlogService } from './blog.service';
 
-export const HATCHWAYS_API = 'https://api.hatchways.io/assessment/blog/posts';
-
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, CacheModule.register()],
   providers: [BlogService],
+  exports: [BlogService],
 })
 export class BlogModule {}
