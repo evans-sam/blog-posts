@@ -11,3 +11,5 @@ export interface Post {
   reads: number;
   tags: string[];
 }
+
+export const HATCHWAYS_API = 'https://api.hatchways.io/assessment/blog/posts';

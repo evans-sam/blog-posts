@@ -1,18 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostService } from './post.service';
+import { BlogService } from '../blog/blog.service';
+import { routeTwoResponse } from '../test/data.test';
 
 describe('PostService', () => {
-  let service: PostService;
+  let postService: PostService;
+  const blogService = {
+    getPosts: jest.fn(),
+  };
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PostService],
-    }).compile();
+      providers: [PostService, BlogService],
+    })
+      .overrideProvider(BlogService)
+      .useValue(blogService)
+      .compile();
 
-    service = module.get<PostService>(PostService);
+    postService = module.get<PostService>(PostService);
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    blogService.getPosts.mockImplementation(() => routeTwoResponse);
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(postService).toBeDefined();
   });
 });
