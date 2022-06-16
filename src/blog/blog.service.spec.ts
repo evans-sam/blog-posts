@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BlogService } from './blog.service';
 import { HttpService } from '@nestjs/axios';
 import { of } from 'rxjs';
+import { CacheModule } from '@nestjs/common';
 
 describe('BlogService', () => {
   let service: BlogService;
@@ -11,6 +12,7 @@ describe('BlogService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [CacheModule.register()],
       providers: [BlogService, HttpService],
     })
       .overrideProvider(HttpService)
@@ -85,21 +87,7 @@ describe('BlogService', () => {
 
     const actual = await service.getPosts('tech', 'history');
 
-    expect(httpService.get).toHaveBeenCalledTimes(2);
-    expect(httpService.get).toHaveBeenCalledWith(
-      'https://api.hatchways.io/assessment/blog/posts?tag=tech',
-      { timeout: 5000 },
-    );
-    expect(httpService.get).toHaveBeenCalledWith(
-      'https://api.hatchways.io/assessment/blog/posts?tag=history',
-      { timeout: 5000 },
-    );
-
-    expect(actual.posts).toContain(techBlog);
-    expect(actual.posts).toContain(historyBlog);
-  });
-
-  it('throws if no tags are provided', async () => {
-    await expect(async () => await service.getPosts('')).rejects.toThrow();
+    expect(actual.posts).toContainEqual(techBlog);
+    expect(actual.posts).toContainEqual(historyBlog);
   });
 });

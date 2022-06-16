@@ -14,12 +14,10 @@ export class BlogService {
 
   async getPosts(...tags: string[]): Promise<BlogResponse> {
     const responses: Post[][] = await Promise.all(
-      tags.map(async (tag) => {
-        let posts = await this.getCachedPosts(tag);
-        if (!posts) posts = await this.getBlogPosts(tag);
-
-        return posts;
-      }),
+      tags.map(
+        async (tag) =>
+          (await this.getCachedPosts(tag)) ?? (await this.getBlogPosts(tag)),
+      ),
     );
 
     return {
