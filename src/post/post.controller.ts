@@ -1,5 +1,4 @@
 import {
-  ArgumentMetadata,
   BadRequestException,
   Controller,
   DefaultValuePipe,
@@ -17,7 +16,7 @@ export type SortDirection = 'desc' | 'asc';
 
 @Injectable()
 export class TagsValidationPipe implements PipeTransform<string, string[]> {
-  transform(value: string, metadata: ArgumentMetadata): string[] {
+  transform(value: string): string[] {
     if (!value)
       throw new BadRequestException({ error: 'Tags parameter is required' });
 
@@ -27,7 +26,7 @@ export class TagsValidationPipe implements PipeTransform<string, string[]> {
 
 @Injectable()
 export class SortByValidationPipe implements PipeTransform<string, SortBy> {
-  transform(value: string, metadata: ArgumentMetadata): SortBy {
+  transform(value: string): SortBy {
     if (!['id', 'reads', 'likes', 'popularity'].includes(value))
       throw new BadRequestException({ error: 'sortBy parameter is invalid' });
 
@@ -36,10 +35,9 @@ export class SortByValidationPipe implements PipeTransform<string, SortBy> {
 }
 
 @Injectable()
-export class SortDirectionValidationPipe
-  implements PipeTransform<string, SortDirection>
+export class SortDirectionValidationPipe implements PipeTransform<string, SortDirection>
 {
-  transform(value: string, metadata: ArgumentMetadata): SortDirection {
+  transform(value: string): SortDirection {
     if (!['desc', 'asc'].includes(value))
       throw new BadRequestException({
         error: 'direction parameter is invalid',
@@ -59,11 +57,7 @@ export class PostController {
     tags: string[],
     @Query('sortBy', new DefaultValuePipe('id'), SortByValidationPipe)
     sortBy: string,
-    @Query(
-      'direction',
-      new DefaultValuePipe('asc'),
-      SortDirectionValidationPipe,
-    )
+    @Query('direction', new DefaultValuePipe('asc'), SortDirectionValidationPipe)
     direction: string,
   ) {
     return await this.postService.getPosts({
