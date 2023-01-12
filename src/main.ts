@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { ValidationError } from 'class-validator';
+import { ValidationError, ValidationPipe } from '@nestjs/common';
 
 (async function () {
   const app = await NestFactory.create(AppModule);
