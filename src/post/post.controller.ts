@@ -8,11 +8,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { Post } from '../blog/types';
-
-export type SortBy = keyof Pick<Post, 'id' | 'reads' | 'likes' | 'popularity'>;
-
-export type SortDirection = 'desc' | 'asc';
+import { ApiQuery } from '@nestjs/swagger';
+import { SortBy, SortDirection } from '../blog/types';
 
 @Injectable()
 export class TagsValidationPipe implements PipeTransform<string, string[]> {
@@ -20,14 +17,14 @@ export class TagsValidationPipe implements PipeTransform<string, string[]> {
     if (!value)
       throw new BadRequestException({ error: 'Tags parameter is required' });
 
-    return value.split(',');
+    return value.split(',').map((tag) => tag.trim());
   }
 }
 
 @Injectable()
 export class SortByValidationPipe implements PipeTransform<string, SortBy> {
   transform(value: string): SortBy {
-    if (!['id', 'reads', 'likes', 'popularity'].includes(value))
+    if (!(value in SortBy))
       throw new BadRequestException({ error: 'sortBy parameter is invalid' });
 
     return value as SortBy;
@@ -39,7 +36,7 @@ export class SortDirectionValidationPipe
   implements PipeTransform<string, SortDirection>
 {
   transform(value: string): SortDirection {
-    if (!['desc', 'asc'].includes(value))
+    if (!(value in SortDirection))
       throw new BadRequestException({
         error: 'direction parameter is invalid',
       });
@@ -53,17 +50,28 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
+  @ApiQuery({ name: 'tags', required: true })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: SortBy,
+  })
+  @ApiQuery({
+    name: 'direction',
+    required: false,
+    enum: SortDirection,
+  })
   async getPosts(
     @Query('tags', TagsValidationPipe)
     tags: string[],
-    @Query('sortBy', new DefaultValuePipe('id'), SortByValidationPipe)
-    sortBy: string,
+    @Query('sortBy', new DefaultValuePipe(SortBy.id), SortByValidationPipe)
+    sortBy?: SortBy,
     @Query(
       'direction',
-      new DefaultValuePipe('asc'),
+      new DefaultValuePipe(SortDirection.asc),
       SortDirectionValidationPipe,
     )
-    direction: string,
+    direction?: SortDirection,
   ) {
     return await this.postService.getPosts({
       tags,
