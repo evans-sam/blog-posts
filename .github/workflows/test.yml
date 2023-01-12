@@ -1,0 +1,19 @@
+name: Test
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+  commit:
+    branches:
+      - master
+
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: latest
+        - run: yarn install
+        - run: yarn test

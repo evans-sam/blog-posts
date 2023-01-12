@@ -35,7 +35,8 @@ export class SortByValidationPipe implements PipeTransform<string, SortBy> {
 }
 
 @Injectable()
-export class SortDirectionValidationPipe implements PipeTransform<string, SortDirection>
+export class SortDirectionValidationPipe
+  implements PipeTransform<string, SortDirection>
 {
   transform(value: string): SortDirection {
     if (!['desc', 'asc'].includes(value))
@@ -57,7 +58,11 @@ export class PostController {
     tags: string[],
     @Query('sortBy', new DefaultValuePipe('id'), SortByValidationPipe)
     sortBy: string,
-    @Query('direction', new DefaultValuePipe('asc'), SortDirectionValidationPipe)
+    @Query(
+      'direction',
+      new DefaultValuePipe('asc'),
+      SortDirectionValidationPipe,
+    )
     direction: string,
   ) {
     return await this.postService.getPosts({
