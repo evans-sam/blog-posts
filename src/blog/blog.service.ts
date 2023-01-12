@@ -1,9 +1,9 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger } from "@nestjs/common";
-import { Cache } from "cache-manager";
-import { BlogResponse, HATCHWAYS_API, Post } from "./types";
-import { HttpService } from "@nestjs/axios";
-import { flatten, uniqBy } from "lodash";
-import { firstValueFrom } from "rxjs";
+import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { Cache } from 'cache-manager';
+import { BlogResponse, HATCHWAYS_API, Post } from './types';
+import { HttpService } from '@nestjs/axios';
+import { flatten, uniqBy } from 'lodash';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class BlogService {

@@ -8,6 +8,7 @@ import {
 import { PostService } from './post.service';
 import { BlogModule } from '../blog/blog.module';
 import { BadRequestException } from '@nestjs/common';
+import { SortBy, SortDirection } from '../blog/types';
 
 describe('PostController', () => {
   let controller: PostController;
@@ -28,7 +29,11 @@ describe('PostController', () => {
     });
 
     it('should return posts', async () => {
-      const posts = await controller.getPosts(['tech'], 'id', 'asc');
+      const posts = await controller.getPosts(
+        ['tech'],
+        SortBy.id,
+        SortDirection.asc,
+      );
       expect(posts).toBeDefined();
     });
 

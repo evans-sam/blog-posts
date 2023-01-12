@@ -28,4 +28,11 @@ describe('PostService', () => {
   it('should be defined', () => {
     expect(postService).toBeDefined();
   });
+
+  it('should sort posts by default if no sortBy is provided', async () => {
+    const posts = await postService.getPosts({ tags: ['tech'] });
+    const result = { posts: [...SampleResponse.posts] };
+    result.posts.sort((a, b) => a.id - b.id);
+    expect(posts.posts).toEqual(SampleResponse.posts);
+  });
 });
