@@ -1,9 +1,9 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
-import { Cache } from 'cache-manager';
-import { BlogResponse, HATCHWAYS_API, Post } from './types';
-import { HttpService } from '@nestjs/axios';
-import { flatten, uniqBy } from 'lodash';
-import { firstValueFrom } from 'rxjs';
+import { CACHE_MANAGER, Inject, Injectable, Logger } from "@nestjs/common";
+import { Cache } from "cache-manager";
+import { BlogResponse, HATCHWAYS_API, Post } from "./types";
+import { HttpService } from "@nestjs/axios";
+import { flatten, uniqBy } from "lodash";
+import { firstValueFrom } from "rxjs";
 
 @Injectable()
 export class BlogService {
@@ -26,9 +26,10 @@ export class BlogService {
   }
 
   private async getBlogPosts(tag: string) {
-    const endPoint = HATCHWAYS_API + `?tag=${tag}`;
+    const endPoint = new URL(HATCHWAYS_API);
+    endPoint.search = new URLSearchParams({ tag }).toString();
     const responseData = await firstValueFrom(
-      await this.httpService.get<BlogResponse>(endPoint, {
+      await this.httpService.get<BlogResponse>(endPoint.href, {
         timeout: 5000,
       }),
     );
